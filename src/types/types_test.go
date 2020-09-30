@@ -36,4 +36,6 @@ func TestParse(t *testing.T) {
 	transPred := parse("(Nat->Nat)->Bool")
 	transPred2 := parseAndAssert(" ((Nat -> Nat) -> Bool)", transPred.From(), boolT)
 	assert.True(t, transPred == transPred2)
+
+	parseAndAssert("(Nat->(Nat->Nat))->Nat->Bool", parse("Nat->Nat->Nat"), natPred)
 }
