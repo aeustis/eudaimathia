@@ -9,19 +9,22 @@ import (
 )
 
 func TestPeek(t *testing.T) {
-	s := token.NewStream("a b c")
-	assert.Equal(t, "a", s.Next())
+	s := token.NewStream("a-)")
+	assert.Equal(t, token.Token{token.Alpha, "a"}, s.Next())
 
-	assert.Equal(t, "b", s.Peek())
-	assert.Equal(t, "b", s.Peek())
-	assert.Equal(t, "b", s.Next())
+	hyphen := token.Token{token.Symbol, "-"}
+	assert.Equal(t, hyphen, s.Peek())
+	assert.Equal(t, hyphen, s.Peek())
+	assert.Equal(t, hyphen, s.Next())
 
-	assert.Equal(t, "c", s.Peek())
-	assert.Equal(t, "c", s.Next())
+	paren := token.Token{token.Symbol, ")"}
+	assert.Equal(t, paren, s.Peek())
+	assert.Equal(t, paren, s.Next())
 
-	assert.Equal(t, "", s.Peek())
-	assert.Equal(t, "", s.Next())
-	assert.Equal(t, "", s.Next())
+	eof := token.Token{token.EOF, ""}
+	assert.Equal(t, eof, s.Peek())
+	assert.Equal(t, eof, s.Next())
+	assert.Equal(t, eof, s.Next())
 }
 
 func TestStream(t *testing.T) {
@@ -82,9 +85,10 @@ func TestStream(t *testing.T) {
 		t.Run(test.input, func(t *testing.T) {
 			s := token.NewStream(test.input)
 			for _, exp := range test.expected {
-				assert.Equal(t, exp, s.Next())
+				assert.Equal(t, exp, s.Next().V)
 			}
-			assert.Equal(t, "", s.Next())
+			eof := token.Token{token.EOF, ""}
+			assert.Equal(t, eof, s.Next())
 		})
 	}
 }
